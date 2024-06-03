@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "519948759818",
+    "project_id": "household-shopper-12028",
+    "storage_bucket": "household-shopper-12028.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519948759818:android:db711de8e50e66bf0700f3",
+        "android_client_info": {
+          "package_name": "com.householdshopper"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAStXaBWWQp46ZVpNFZ962nhvNvjxqfRag"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
