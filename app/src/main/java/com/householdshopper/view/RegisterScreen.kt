@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,14 +29,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.householdshopper.ui.theme.blue
 import com.householdshopper.viewmodel.RegisterViewModel
 
 @Composable
-fun RegisterScreen(navController: NavHostController, registerViewModel: RegisterViewModel = viewModel()){
+fun RegisterScreen(
+    navController: NavHostController,
+    viewModel: RegisterViewModel){
+
     val annotatedString = buildAnnotatedString {
         append("Already have account? ")
 
@@ -48,7 +51,7 @@ fun RegisterScreen(navController: NavHostController, registerViewModel: Register
         append(" now")
     }
 
-    val registerResult by registerViewModel.registerResult.collectAsState()
+    val registerResult by viewModel.registerResult.collectAsState()
     var username by remember {
         mutableStateOf("")
     }
@@ -113,6 +116,18 @@ fun RegisterScreen(navController: NavHostController, registerViewModel: Register
             modifier = Modifier
                 .width(250.dp)
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        registerResult?.let {
+            if (it.success){
+                LaunchedEffect(Unit) {
+                    navController.navigate("home")  //TODO go to create household or join household
+                }
+            }
+            Text(
+                text = it.message,
+                color = Color.Red
+            )
+        }
         Spacer(modifier = Modifier.height(32.dp))
         ClickableText(
             text = annotatedString,
@@ -126,7 +141,7 @@ fun RegisterScreen(navController: NavHostController, registerViewModel: Register
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
-            onClick = {/*TODO*/},
+            onClick = {viewModel.register(username = username, email = email, password = password, householdId = "")},
             modifier = Modifier.width(150.dp)
         ) {
             Text(text = "Register")

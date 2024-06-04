@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
-class ShoppingListViewModel @Inject constructor(
-    private val repository: ShoppingListRepository): ViewModel() {
-
+class ShoppingListViewModel @Inject constructor(private val repository: ShoppingListRepository): ViewModel() {
     private val _shoppingList = MutableStateFlow<ShoppingList?>(null)
     val shoppingList: StateFlow<ShoppingList?> = _shoppingList
 

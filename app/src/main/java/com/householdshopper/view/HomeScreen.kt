@@ -3,15 +3,22 @@ package com.householdshopper.view
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
@@ -28,24 +35,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.householdshopper.view.recycleView.ShoppingListItem
 import com.householdshopper.viewmodel.HomeViewModel
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import com.google.firebase.auth.FirebaseAuth
+import com.householdshopper.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController,homeViewModel: HomeViewModel = viewModel()) {
-    val shoppingLists by homeViewModel.shoppingLists.collectAsState()
+fun HomeScreen(
+    navController: NavHostController,
+    viewModel: HomeViewModel) {
+
+    val shoppingLists by viewModel.shoppingLists.collectAsState()
 
     var selectedItem by remember { mutableIntStateOf(0) }
     val items = listOf("Active lists", "All lists", "Household")
 
-    val householdID = "pxFKvnE1Jf9SA5XaYMWb"
-    LaunchedEffect(householdID /*TODO get householdID that should be carried between composable*/){
-        homeViewModel.getActiveLists(householdID)
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit){
+        viewModel.getActiveLists()
     }
 
     Column(
@@ -69,10 +88,33 @@ fun HomeScreen(navController: NavHostController,homeViewModel: HomeViewModel = v
                 }
             },
             actions = {
-                IconButton(onClick = { /* do something */ }) {
+                IconButton(onClick = { isExpanded = !isExpanded }) {
                     Icon(
                         imageVector = Icons.Filled.Menu,
                         contentDescription = "Menu"
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = isExpanded,
+                    onDismissRequest = { isExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                    contentDescription = "Logout",
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text("Logout")
+                            }
+                        },
+                        onClick = {
+                            FirebaseAuth.getInstance().signOut()
+                            isExpanded = false
+                            navController.navigate("login")
+                        }
                     )
                 }
             }
@@ -84,7 +126,7 @@ fun HomeScreen(navController: NavHostController,homeViewModel: HomeViewModel = v
             items(
                 items = shoppingLists,
                 itemContent = {
-                    ShoppingListItem(shoppingList = it, viewModel = homeViewModel, navController = navController)
+                    ShoppingListItem(shoppingList = it, viewModel = viewModel, navController = navController)
                 }
             )
         }
@@ -96,7 +138,7 @@ fun HomeScreen(navController: NavHostController,homeViewModel: HomeViewModel = v
                     selected = selectedItem == index,
                     onClick = {
                         selectedItem = index
-                        homeViewModel.updateScreen(index,householdID)
+                        viewModel.updateScreen(index)
                     }
                 )
             }

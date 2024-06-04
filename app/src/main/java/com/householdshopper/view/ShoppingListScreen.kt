@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.householdshopper.ui.theme.gray
 import com.householdshopper.ui.theme.light_gray
 import com.householdshopper.view.recycleView.ShoppingListItemsItem
 import com.householdshopper.viewmodel.ShoppingListViewModel
@@ -44,22 +45,21 @@ fun ShoppingListScreen(
 
     Column (
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
         CenterAlignedTopAppBar(
-            modifier = Modifier.background(light_gray),
+            modifier = Modifier.background(gray),
             title = {
                 Text(
-                    text = "$shoppingList.name",
+                    text = "${shoppingList?.name}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
                 )
             },
             navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
+                IconButton(onClick = { navController.navigate("home") }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Go back"

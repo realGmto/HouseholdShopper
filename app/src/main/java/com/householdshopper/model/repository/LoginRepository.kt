@@ -5,8 +5,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.householdshopper.model.LoginResult
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class LoginRepository {
+class LoginRepository @Inject constructor(){
     private val auth: FirebaseAuth = Firebase.auth
 
     suspend fun login(email: String, password: String): LoginResult {

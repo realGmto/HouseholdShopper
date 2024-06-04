@@ -26,7 +26,7 @@ import com.householdshopper.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShoppingListItem (shoppingList:ShoppingList,viewModel: HomeViewModel, navController: NavController){
+fun ShoppingListItem (shoppingList:ShoppingList, viewModel: HomeViewModel, navController: NavController){
     Card(                   // Have to disable card click on clicking an delete icon
         modifier = Modifier
             .padding(8.dp)

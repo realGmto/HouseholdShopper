@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.householdshopper.model.repository.LoginRepository
 import com.householdshopper.model.LoginResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-class LoginViewModel(private val repository: LoginRepository) : ViewModel() {
+import javax.inject.Inject
+@HiltViewModel
+class LoginViewModel @Inject constructor(private val repository: LoginRepository) : ViewModel() {
     private val _loginResult = MutableStateFlow<LoginResult?>(null)
     val loginResult: StateFlow<LoginResult?> = _loginResult
 

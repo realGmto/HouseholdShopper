@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -33,11 +32,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.householdshopper.ui.theme.blue
 import com.householdshopper.viewmodel.LoginViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 
 @Composable
-fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel = viewModel()){
+fun LoginScreen(
+    navController: NavHostController,
+    viewModel: LoginViewModel){
+
     val annotatedString = buildAnnotatedString {
         append("Don’t have account? ")
 
@@ -49,7 +50,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
 
         append(" now")
     }
-    val loginResult by loginViewModel.loginResult.collectAsState()
+    val loginResult by viewModel.loginResult.collectAsState()
     var email by remember {
         mutableStateOf("")
     }
@@ -115,7 +116,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
             )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
-            onClick = {loginViewModel.login(email,password)},
+            onClick = {viewModel.login(email,password)},
             modifier = Modifier.width(150.dp)
             ) {
             Text(text = "Login")
