@@ -5,8 +5,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.householdshopper.model.ShoppingList
 import com.householdshopper.model.ShoppingListItem
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class ShoppingListRepository {
+class ShoppingListRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
 
     suspend fun getActiveShoppingLists(householdID: String): List<ShoppingList>{

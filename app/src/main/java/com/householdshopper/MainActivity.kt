@@ -26,7 +26,11 @@ import com.householdshopper.viewmodel.HomeViewModel
 import com.householdshopper.viewmodel.LoginViewModel
 import com.householdshopper.viewmodel.RegisterViewModel
 import com.householdshopper.viewmodel.ShoppingListViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val loginRepository = LoginRepository()
     val loginViewModel: LoginViewModel by viewModels {
@@ -64,16 +68,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    val shoppingListViewModel: ShoppingListViewModel by viewModels {
-        object : ViewModelProvider.Factory{
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if(modelClass.isAssignableFrom(ShoppingListViewModel::class.java)){
-                    @Suppress("UNCHECKED_CAST")
-                    return ShoppingListViewModel(shoppingListRepository,sa) as T
-                }
-            }
-        }
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -94,8 +88,10 @@ class MainActivity : ComponentActivity() {
                         composable("home") {
                             HomeScreen(navController = navController, homeViewModel = homeViewModel)
                         }
-                        composable("list/{listId}"){
-                            ShoppingListScreen(navController = navController, shoppingListViewModel = )
+                        composable("list/{listId}"){backStackEntry ->
+                            val listId = backStackEntry.arguments?.getString("listId")
+                            val viewModel = hiltViewModel<ShoppingListViewModel>()
+                            ShoppingListScreen(navController = navController, viewModel = viewModel, listId= listId)
                         }
                     }
                 }
