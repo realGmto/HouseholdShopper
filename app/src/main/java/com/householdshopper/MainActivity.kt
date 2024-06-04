@@ -21,9 +21,11 @@ import com.householdshopper.ui.theme.HouseholdShopperTheme
 import com.householdshopper.view.HomeScreen
 import com.householdshopper.view.LoginScreen
 import com.householdshopper.view.RegisterScreen
+import com.householdshopper.view.ShoppingListScreen
 import com.householdshopper.viewmodel.HomeViewModel
 import com.householdshopper.viewmodel.LoginViewModel
 import com.householdshopper.viewmodel.RegisterViewModel
+import com.householdshopper.viewmodel.ShoppingListViewModel
 
 class MainActivity : ComponentActivity() {
     val loginRepository = LoginRepository()
@@ -62,6 +64,16 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    val shoppingListViewModel: ShoppingListViewModel by viewModels {
+        object : ViewModelProvider.Factory{
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if(modelClass.isAssignableFrom(ShoppingListViewModel::class.java)){
+                    @Suppress("UNCHECKED_CAST")
+                    return ShoppingListViewModel(shoppingListRepository,sa) as T
+                }
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -81,6 +93,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("home") {
                             HomeScreen(navController = navController, homeViewModel = homeViewModel)
+                        }
+                        composable("list/{listId}"){
+                            ShoppingListScreen(navController = navController, shoppingListViewModel = )
                         }
                     }
                 }

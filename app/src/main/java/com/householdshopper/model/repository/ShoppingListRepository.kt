@@ -103,9 +103,42 @@ class ShoppingListRepository {
             emptyList()
         }
     }
+
+    suspend fun getSpecificShoppingList(listID:String): ShoppingList?{
+        return try {
+            val document = db.collection("ShoppingLists")
+                .document(listID)
+                .get()
+                .await()
+
+            if (document.exists()) {
+                val shoppingList = document.toObject(ShoppingList::class.java)?.apply {
+                    this.documentId = document.id // Set the documentId
+                }
+
+                val itemsSnapshot = document.reference.collection("items")
+                    .get()
+                    .await()
+
+                val items = itemsSnapshot.documents.mapNotNull { itemDoc ->
+                    itemDoc.toObject(ShoppingListItem::class.java)?.apply {
+                        documentId = itemDoc.id // Set the documentId
+                    }
+                }
+
+                shoppingList?.copy(items = items)
+            } else {
+                null
+            }
+        } catch (e: Exception){
+            println("Error getting shopping lists: $e")
+            null
+        }
+    }
+
     // Needs to be updated
-    fun addItemToList(listId: String, itemId: String, quantity: Int, unit: String){
-        val item = ShoppingListItem(itemID = itemId, quantity =  quantity, unit =  unit)
+    fun addItemToList(listId: String, name: String, quantity: Int, unit: String){
+        val item = ShoppingListItem(name = name, quantity =  quantity, unit =  unit)
         db.collection("shoppingLists")
             .document(listId)
             .collection("items")
@@ -116,20 +149,5 @@ class ShoppingListRepository {
             .addOnFailureListener { e ->
                 println("Error adding item to list: $e")
             }
-    }
-
-    suspend fun getItemsFromList(listId: String): List<ShoppingListItem> {
-        return try {
-            val result = db.collection("shoppingLists")
-                .document(listId)
-                .collection("items")
-                .get()
-                .await()
-
-            result.documents.mapNotNull { it.toObject(ShoppingListItem::class.java) }
-        } catch (e: Exception) {
-            println("Error getting items: $e")
-            emptyList()
-        }
     }
 }

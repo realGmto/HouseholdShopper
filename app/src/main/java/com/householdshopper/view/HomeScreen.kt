@@ -61,7 +61,7 @@ fun HomeScreen(navController: NavHostController,homeViewModel: HomeViewModel = v
                 fontSize = 24.sp
             )},
             navigationIcon = {
-                IconButton(onClick = { /* do something */ }) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Go back"
@@ -84,7 +84,7 @@ fun HomeScreen(navController: NavHostController,homeViewModel: HomeViewModel = v
             items(
                 items = shoppingLists,
                 itemContent = {
-                    ShoppingListItem(shoppingList = it, viewModel = homeViewModel)
+                    ShoppingListItem(shoppingList = it, viewModel = homeViewModel, navController = navController)
                 }
             )
         }

@@ -20,19 +20,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.householdshopper.model.ShoppingList
 import com.householdshopper.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShoppingListItem (shoppingList:ShoppingList,viewModel: HomeViewModel){
+fun ShoppingListItem (shoppingList:ShoppingList,viewModel: HomeViewModel, navController: NavController){
     Card(                   // Have to disable card click on clicking an delete icon
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
         shape = RoundedCornerShape(corner = CornerSize(25)),
-        onClick = { /*TODO*/ }
+        onClick = { navController.navigate("list/${shoppingList.documentId}") }
     ) {
         Row (
             modifier = Modifier
