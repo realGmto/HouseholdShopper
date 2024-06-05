@@ -1,5 +1,6 @@
 package com.householdshopper.model.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.householdshopper.model.User

@@ -3,6 +3,6 @@ package com.householdshopper.model
 import android.provider.ContactsContract.CommonDataKinds.Email
 
 data class User(
-    val username: String,
-    val householdID: String
+    val householdID: String? = null,
+    val username: String? = null
 )
