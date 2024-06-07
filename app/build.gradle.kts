@@ -84,5 +84,7 @@ dependencies {
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    implementation ("com.github.kosher9:Compose-Round-CheckBox:1.0.0")
 }
 

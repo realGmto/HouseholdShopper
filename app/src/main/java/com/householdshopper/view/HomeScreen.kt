@@ -1,6 +1,7 @@
 package com.householdshopper.view
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
@@ -19,8 +21,10 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -55,8 +59,8 @@ fun HomeScreen(
     viewModel: HomeViewModel) {
 
     val shoppingLists by viewModel.shoppingLists.collectAsState()
+    val selectedItem by viewModel.selectedItem.collectAsState()
 
-    var selectedItem by remember { mutableIntStateOf(0) }
     val items = listOf("Active lists", "All lists", "Household")
 
     var isExpanded by remember {
@@ -119,16 +123,41 @@ fun HomeScreen(
                 }
             }
         )
-        LazyColumn (
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(vertical = 25.dp, horizontal = 10.dp)
-        ){
-            items(
-                items = shoppingLists,
-                itemContent = {
-                    ShoppingListItem(shoppingList = it, viewModel = viewModel, navController = navController)
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(vertical = 25.dp, horizontal = 10.dp)
+            ) {
+                items(
+                    items = shoppingLists,
+                    itemContent = {
+                        ShoppingListItem(shoppingList = it, viewModel = viewModel, navController = navController)
+                    }
+                )
+            }
+            FloatingActionButton(
+                onClick = { /* Handle add action */ },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.BottomEnd),
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Item",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Text(text = "NEW LIST",
+                        modifier = Modifier.padding(end = 4.dp))
                 }
-            )
+            }
         }
         NavigationBar {
             items.forEachIndexed { index, item ->
@@ -136,10 +165,7 @@ fun HomeScreen(
                     icon = { Icon(Icons.Filled.Favorite/*TODO*/, contentDescription = item) },
                     label = { Text(item) },
                     selected = selectedItem == index,
-                    onClick = {
-                        selectedItem = index
-                        viewModel.updateScreen(index)
-                    }
+                    onClick = { viewModel.updateScreen(index) }
                 )
             }
         }

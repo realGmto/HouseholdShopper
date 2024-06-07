@@ -3,7 +3,7 @@ package com.householdshopper.model
 import com.google.firebase.firestore.DocumentId
 
 data class ShoppingListItem(
-    val isBought: Boolean = false,
+    @field:JvmField val isBought: Boolean = false, // Need that part or toObject won't correctly transform to Boolean
     val name: String = "",
     val quantity: Int = 0,
     val unit: String = "",
