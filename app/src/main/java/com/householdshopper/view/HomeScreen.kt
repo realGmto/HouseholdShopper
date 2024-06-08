@@ -59,16 +59,12 @@ fun HomeScreen(
     viewModel: HomeViewModel) {
 
     val shoppingLists by viewModel.shoppingLists.collectAsState()
-    val selectedItem by viewModel.selectedItem.collectAsState()
+    val household by viewModel.household.collectAsState()
 
-    val items = listOf("Active lists", "All lists", "Household")
+    val selectedItem by viewModel.selectedItem.collectAsState()
 
     var isExpanded by remember {
         mutableStateOf(false)
-    }
-
-    LaunchedEffect(Unit){
-        viewModel.getActiveLists()
     }
 
     Column(
@@ -79,7 +75,7 @@ fun HomeScreen(
         CenterAlignedTopAppBar(
             title = {
                 Text(
-                text = "Test"/*TODO*/,
+                text = household.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             )},
@@ -139,7 +135,7 @@ fun HomeScreen(
                 )
             }
             FloatingActionButton(
-                onClick = { /* Handle add action */ },
+                onClick = { navController.navigate("createList") },
                 modifier = Modifier
                     .padding(16.dp)
                     .align(Alignment.BottomEnd),
@@ -160,14 +156,18 @@ fun HomeScreen(
             }
         }
         NavigationBar {
-            items.forEachIndexed { index, item ->
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Favorite/*TODO*/, contentDescription = item) },
-                    label = { Text(item) },
-                    selected = selectedItem == index,
-                    onClick = { viewModel.updateScreen(index) }
-                )
-            }
+            NavigationBarItem(
+                icon = { Icon(Icons.Filled.Favorite, contentDescription = "Active lists") },
+                label = { Text("Active lists") },
+                selected = selectedItem == 0,
+                onClick = { viewModel.updateLists(0) }
+            )
+            NavigationBarItem(
+                icon = { Icon(Icons.Filled.Favorite, contentDescription = "All lists") },
+                label = { Text("All lists") },
+                selected = selectedItem == 1,
+                onClick = { viewModel.updateLists(1) }
+            )
         }
     }
 }

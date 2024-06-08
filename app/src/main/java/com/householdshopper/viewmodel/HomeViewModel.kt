@@ -5,8 +5,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.householdshopper.model.Household
 import com.householdshopper.model.ShoppingList
 import com.householdshopper.model.ShoppingListItem
+import com.householdshopper.model.repository.HouseholdRepository
 import com.householdshopper.model.repository.ShoppingListRepository
 import com.householdshopper.model.repository.UserRepository
 import com.householdshopper.ui.theme.green
@@ -17,37 +19,50 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val shoppingListRepository: ShoppingListRepository, private val userRepository: UserRepository): ViewModel() {
+class HomeViewModel @Inject constructor(private val shoppingListRepository: ShoppingListRepository, private val userRepository: UserRepository, private val householdRepository: HouseholdRepository): ViewModel() {
     private val _shoppingLists = MutableStateFlow<List<ShoppingList>>(emptyList())
     val shoppingLists: StateFlow<List<ShoppingList>> = _shoppingLists
 
-    private val _selectedItem = MutableStateFlow<Int>(0)
+    private val _household = MutableStateFlow(Household())
+    val household: StateFlow<Household> = _household
+
+    private val _selectedItem = MutableStateFlow(0)
     val selectedItem: StateFlow<Int> = _selectedItem
+
+    init {
+        getHousehold()
+        getActiveLists()
+    }
+
+    fun getHousehold(){
+        viewModelScope.launch {
+            val householdID = userRepository.getUser(FirebaseAuth.getInstance().currentUser?.uid ?: "")?.householdID?: ""
+            val result = householdRepository.getSpecificHousehold(householdID)
+            _household.value = result
+        }
+    }
 
     fun getActiveLists(){
         viewModelScope.launch{
-            val householdID = userRepository.getUser(FirebaseAuth.getInstance().currentUser?.uid ?: "")?.householdID?: ""
-            val result = shoppingListRepository.getActiveShoppingLists(householdID)
+            val result = shoppingListRepository.getActiveShoppingLists(_household.value.householdId)
             _shoppingLists.value = result
         }
     }
 
     fun getAllLists(){
         viewModelScope.launch {
-            val householdID = userRepository.getUser(FirebaseAuth.getInstance().currentUser?.uid ?: "")?.householdID?: ""
-            val result =shoppingListRepository.getAllShoppingLists(householdID)
+            val result =shoppingListRepository.getAllShoppingLists(_household.value.householdId)
             _shoppingLists.value = result
         }
     }
 
-    fun updateScreen(index:Int){
-        _selectedItem.value = index
+    fun updateLists(choice: Int){
+        _selectedItem.value = choice
 
-        if (index == 0){
+        if (choice == 0)
             getActiveLists()
-        }else if (index ==1){
+        else
             getAllLists()
-        }/*TODO - implement function to get all members of household if index is 2*/
     }
 
     fun countRemainingItems(items: List<ShoppingListItem>):Int{

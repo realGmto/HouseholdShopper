@@ -137,6 +137,10 @@ class ShoppingListRepository @Inject constructor() {
         }
     }
 
+    suspend fun createNewList(userId: String,householdID: String,name: String){
+        //TODO
+    }
+
     // Needs to be updated
     fun addItemToList(listId: String, name: String, quantity: Int, unit: String){
         val item = ShoppingListItem(name = name, quantity =  quantity, unit =  unit)

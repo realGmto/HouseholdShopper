@@ -37,8 +37,8 @@ import com.householdshopper.viewmodel.ShoppingListViewModel
 fun ShoppingListScreen(
     navController: NavHostController,
     viewModel: ShoppingListViewModel,
-    listId : String?){
-
+    listId : String?
+){
     val shoppingList by viewModel.shoppingList.collectAsState()
 
     viewModel.getSpecificShoppingList(listId!!)
@@ -59,7 +59,7 @@ fun ShoppingListScreen(
                 )
             },
             navigationIcon = {
-                IconButton(onClick = { navController.navigate("home") }) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Go back"
