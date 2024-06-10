@@ -39,11 +39,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.householdshopper.ui.theme.gray
 import com.householdshopper.ui.theme.light_gray
+import com.householdshopper.viewmodel.CreateListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateShoppingListScreen(
     navController: NavHostController,
+    createListViewModel: CreateListViewModel
 ){
     var name by remember {
         mutableStateOf("")
@@ -88,7 +90,7 @@ fun CreateShoppingListScreen(
         )
         
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { createListViewModel.createShoppingList(name = name, navController = navController) },
             colors = ButtonDefaults.buttonColors(containerColor = light_gray)
         ) {
             Text(

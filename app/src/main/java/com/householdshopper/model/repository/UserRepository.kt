@@ -9,20 +9,18 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
-    suspend fun getUser(uid: String):User?{
+    suspend fun getUser(uid: String):User{
         return try {
             val document = db.collection("Users").document(uid)
                 .get()
                 .await()
 
-            if (document.exists()){
-                document.toObject(User::class.java)
-            } else {
-                null
-            }
+            document.toObject(User::class.java)?.apply {
+                documentId = document.id
+            }?: User()
         }catch (e: Exception){
             println("Error has occurred")
-            null
+            User()
         }
     }
 }

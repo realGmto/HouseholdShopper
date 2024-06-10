@@ -66,6 +66,10 @@ fun HomeScreen(
     var isExpanded by remember {
         mutableStateOf(false)
     }
+    // This is for updating shoppingLists
+    LaunchedEffect(Unit) {
+        viewModel.updateLists(selectedItem)
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),

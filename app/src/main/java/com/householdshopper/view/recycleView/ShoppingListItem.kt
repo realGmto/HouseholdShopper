@@ -1,6 +1,5 @@
 package com.householdshopper.view.recycleView
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,9 +52,8 @@ fun ShoppingListItem (shoppingList:ShoppingList, viewModel: HomeViewModel, navCo
                     fontSize = 22.sp
                 )
                 Row {
-                    //TODO implement progress bar
                     Text(
-                        text = "${viewModel.countRemainingItems(shoppingList.items)}/${shoppingList.items.size}",
+                        text = "${viewModel.countBoughtItems(shoppingList.items)}/${shoppingList.items.size}",
                         fontWeight = FontWeight.Medium,
                         fontSize = 22.sp
                     )
