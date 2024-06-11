@@ -151,7 +151,7 @@ fun HomeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add Item",
+                        contentDescription = "new list",
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                     Text(text = "NEW LIST",

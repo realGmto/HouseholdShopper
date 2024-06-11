@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.householdshopper.model.ShoppingList
+import com.householdshopper.model.ShoppingListItem
 import com.householdshopper.model.repository.ShoppingListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,5 +21,15 @@ class ShoppingListViewModel @Inject constructor(private val repository: Shopping
             val result = repository.getSpecificShoppingList(listId)
             _shoppingList.value = result
         }
+    }
+
+    fun addNewItem(){
+        viewModelScope.launch {
+
+        }
+    }
+
+    fun getCurrentItem(){
+
     }
 }

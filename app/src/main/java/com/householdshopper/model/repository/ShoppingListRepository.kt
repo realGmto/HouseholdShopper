@@ -93,7 +93,6 @@ class ShoppingListRepository @Inject constructor() {
     }
 
     suspend fun createNewList(user: User,household: Household,name: String):String{
-        //TODO
         return try {
             val shoppingList = hashMapOf(
                 "assignedUserID" to user.documentId,
@@ -110,20 +109,5 @@ class ShoppingListRepository @Inject constructor() {
             println("Error creating shopping list: $e")
             ""
         }
-    }
-
-    // Needs to be moved to ShoppingListItem repository
-    fun addItemToList(listId: String, name: String, quantity: Int, unit: String){
-        val item = ShoppingListItem(name = name, quantity =  quantity, unit =  unit)
-        db.collection("shoppingLists")
-            .document(listId)
-            .collection("items")
-            .add(item)
-            .addOnSuccessListener { documentReference ->
-                println("Item added to list with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                println("Error adding item to list: $e")
-            }
     }
 }
