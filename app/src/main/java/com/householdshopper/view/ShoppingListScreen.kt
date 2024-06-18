@@ -341,7 +341,7 @@ fun ShoppingListScreen(
                         Spacer(modifier = Modifier.weight(1f))
                         Button(onClick = {
                             scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                viewModel.addNewItem(listId,name,quantity,unit)
+                                viewModel.addNewItem(name,quantity,unit)
                                 if (!sheetState.isVisible) {
                                     showBottomSheet = false
                                 }

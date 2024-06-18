@@ -90,7 +90,7 @@ fun ShoppingListItemsItem(item: ShoppingListItem, viewModel: ShoppingListViewMod
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            IconButton(onClick = {}) {
+            IconButton(onClick = { viewModel.removeItem(documentId = item.documentId) }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",

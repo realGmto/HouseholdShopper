@@ -1,6 +1,7 @@
 package com.householdshopper.model.repository
 
 import android.util.Log
+import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.FirebaseFirestore
 import com.householdshopper.model.ShoppingListItem
 import kotlinx.coroutines.tasks.await
@@ -23,5 +24,21 @@ class ShoppingListItemsRepository @Inject constructor(){
              Log.e("Firestore", "Error adding new item", e)
              false
          }
+    }
+
+    suspend fun removeItemFromList(listId: String,documentId: String): Boolean{
+        return try {
+            val result = db.collection("ShoppingLists")
+                .document(listId)
+                .collection("items")
+                .document(documentId)
+                .delete()
+                .await()
+            Log.d("Firestore", "Successfully removed item from list")
+            true
+        }catch (e:Exception){
+            Log.e("Firestore", "Error while removing item", e)
+            false
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.householdshopper.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.DocumentId
 import com.householdshopper.model.ShoppingList
 import com.householdshopper.model.repository.ShoppingListItemsRepository
 import com.householdshopper.model.repository.ShoppingListRepository
@@ -25,12 +26,12 @@ class ShoppingListViewModel @Inject constructor(
         }
     }
 
-    fun addNewItem(listId: String,name: String,quantity:Int,unit:String){
+    fun addNewItem(name: String,quantity:Int,unit:String){
         viewModelScope.launch {
-            val result = itemsRepository.addItemToList(listId = listId, name = name, quantity = quantity, unit = unit)
+            val result = itemsRepository.addItemToList(listId = _shoppingList.value?.documentId ?: "", name = name, quantity = quantity, unit = unit)
             // TODO - notify users that new item is added
             if (result)
-                getSpecificShoppingList(listId)
+                getSpecificShoppingList(_shoppingList.value?.documentId ?: "")
         }
     }
 
@@ -38,7 +39,12 @@ class ShoppingListViewModel @Inject constructor(
 
     }
 
-    fun removeItem(){
+    fun removeItem(documentId: String){
+        viewModelScope.launch{
+            val result = itemsRepository.removeItemFromList(listId = _shoppingList.value?.documentId ?: "", documentId = documentId)
 
+            if (result)
+                getSpecificShoppingList(_shoppingList.value?.documentId ?: "")
+        }
     }
 }
