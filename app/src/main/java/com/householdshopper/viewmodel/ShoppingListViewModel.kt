@@ -29,7 +29,7 @@ class ShoppingListViewModel @Inject constructor(
         }
     }
 
-    fun validateItemData(context: Context,name: String,quantity:Int,unit:String){
+    fun validateItemData(context: Context,name: String,quantity:Int,unit:String):Boolean{
         var valid = true
         if (name.length <= 3){
             valid = false
@@ -45,6 +45,7 @@ class ShoppingListViewModel @Inject constructor(
         }
         if (valid)
             addNewItem(name,quantity,unit)
+        return valid
     }
 
     fun addNewItem(name: String,quantity:Int,unit:String){

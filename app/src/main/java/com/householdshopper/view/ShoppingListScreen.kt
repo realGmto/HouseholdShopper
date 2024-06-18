@@ -343,10 +343,11 @@ fun ShoppingListScreen(
                         }
                         Spacer(modifier = Modifier.weight(1f))
                         Button(onClick = {
-                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                viewModel.validateItemData(context, name, quantity, unit)
-                                if (!sheetState.isVisible) {
+                            scope.launch {
+                                val result = viewModel.validateItemData(context, name, quantity, unit)
+                                if (sheetState.isVisible && result) {
                                     showBottomSheet = false
+                                    sheetState.hide()
                                 }
                             }
                         }) {
