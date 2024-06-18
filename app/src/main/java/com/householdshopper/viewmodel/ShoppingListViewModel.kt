@@ -1,5 +1,8 @@
 package com.householdshopper.viewmodel
 
+import android.content.Context
+import android.widget.Toast
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentId
@@ -24,6 +27,24 @@ class ShoppingListViewModel @Inject constructor(
             val result = shoppingListRepository.getSpecificShoppingList(listId)
             _shoppingList.value = result
         }
+    }
+
+    fun validateItemData(context: Context,name: String,quantity:Int,unit:String){
+        var valid = true
+        if (name.length <= 3){
+            valid = false
+            Toast.makeText(context,"Name is too short. Try again",Toast.LENGTH_LONG).show()
+        }
+        if (quantity <= 0){
+            valid = false
+            Toast.makeText(context,"Quantity can't be non positive number. Try again",Toast.LENGTH_LONG).show()
+        }
+        if (unit == "" || unit.contains("[0-9]".toRegex())){
+            valid = false
+            Toast.makeText(context,"Unit can't be empty or contain number. Try again",Toast.LENGTH_LONG).show()
+        }
+        if (valid)
+            addNewItem(name,quantity,unit)
     }
 
     fun addNewItem(name: String,quantity:Int,unit:String){

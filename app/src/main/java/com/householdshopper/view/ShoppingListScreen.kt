@@ -73,6 +73,7 @@ fun ShoppingListScreen(
     listId : String?
 ){
     val shoppingList by viewModel.shoppingList.collectAsState()
+    val context = LocalContext.current
 
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -83,9 +84,9 @@ fun ShoppingListScreen(
     var unit by remember { mutableStateOf("") }
 
     // TODO - Implement validation
-    var nameError by remember { mutableStateOf("") }
-    var quantityError by remember { mutableStateOf("") }
-    var unitError by remember { mutableStateOf("") }
+    var nameError by remember { mutableStateOf(false) }
+    var quantityError by remember { mutableStateOf(false) }
+    var unitError by remember { mutableStateOf(false) }
 
     viewModel.getSpecificShoppingList(listId!!)
 
@@ -190,7 +191,7 @@ fun ShoppingListScreen(
                             value = name,
                             onValueChange = {
                                 name = it
-                                nameError = ""},
+                                nameError = false},
                             placeholder = { Text(text = "Product name", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)) },
                             shape = RoundedCornerShape(25),
                             colors = OutlinedTextFieldDefaults.colors(
@@ -201,6 +202,7 @@ fun ShoppingListScreen(
                                 focusedContainerColor = light_gray,
                             ),
                             textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onBackground),
+                            isError = nameError,
                             modifier = Modifier
                                 .background(
                                     modal_background,
@@ -217,7 +219,7 @@ fun ShoppingListScreen(
                         OutlinedTextField(
                             value = quantity.toString(),
                             onValueChange = {quantity = it.toInt()
-                                quantityError = ""},
+                                quantityError = false},
                             label = { Text(text = "Quantity", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)) },
                             shape = RoundedCornerShape(25),
                             colors = OutlinedTextFieldDefaults.colors(
@@ -228,6 +230,7 @@ fun ShoppingListScreen(
                                 focusedContainerColor = light_gray,
                             ),
                             textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onBackground),
+                            isError = quantityError,
                             modifier = Modifier
                                 .background(
                                     modal_background,
@@ -241,7 +244,7 @@ fun ShoppingListScreen(
                             value = unit,
                             onValueChange = {
                                 unit = it
-                                unitError = ""},
+                                unitError = false},
                             label = { Text(text = "Unit", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)) },
                             shape = RoundedCornerShape(25),
                             colors = OutlinedTextFieldDefaults.colors(
@@ -252,7 +255,7 @@ fun ShoppingListScreen(
                                 focusedContainerColor = light_gray,
                             ),
                             textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onBackground),
-                            isError = unitError.isNotEmpty(),
+                            isError = unitError,
                             modifier = Modifier
                                 .background(
                                     modal_background,
@@ -341,7 +344,7 @@ fun ShoppingListScreen(
                         Spacer(modifier = Modifier.weight(1f))
                         Button(onClick = {
                             scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                viewModel.addNewItem(name,quantity,unit)
+                                viewModel.validateItemData(context, name, quantity, unit)
                                 if (!sheetState.isVisible) {
                                     showBottomSheet = false
                                 }
