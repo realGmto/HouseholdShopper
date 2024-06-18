@@ -69,4 +69,10 @@ class ShoppingListViewModel @Inject constructor(
                 getSpecificShoppingList(_shoppingList.value?.documentId ?: "")
         }
     }
+
+    fun updateBoughtStatus(documentId: String, state:Boolean){
+        viewModelScope.launch{
+            itemsRepository.updateIsBought(listId = _shoppingList.value?.documentId ?: "", documentId = documentId, state = state)
+        }
+    }
 }

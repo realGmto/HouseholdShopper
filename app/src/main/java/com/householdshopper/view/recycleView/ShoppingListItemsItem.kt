@@ -62,7 +62,10 @@ fun ShoppingListItemsItem(item: ShoppingListItem, viewModel: ShoppingListViewMod
             RoundCheckBox(
                 modifier = Modifier.width(60.dp),
                 isChecked = roundCheckBoxState,
-                onClick = { roundCheckBoxState = !roundCheckBoxState },
+                onClick = {
+                    roundCheckBoxState = !roundCheckBoxState
+                    viewModel.updateBoughtStatus(item.documentId,roundCheckBoxState)
+                    },
                 enabled = true
             )
             Spacer(modifier = Modifier.width(8.dp))

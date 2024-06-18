@@ -41,4 +41,20 @@ class ShoppingListItemsRepository @Inject constructor(){
             false
         }
     }
+
+    suspend fun updateIsBought(listId: String, documentId: String,state : Boolean): Boolean {
+        return try {
+            db.collection("ShoppingLists")
+                .document(listId)
+                .collection("items")
+                .document(documentId)
+                .update("isBought",state)
+                .await()
+            Log.d("Firestore", "Successfully updated isBought field in item")
+            true
+        }catch (e:Exception){
+            Log.e("Firestore", "Error while updating isBought field in item", e)
+            false
+        }
+    }
 }
