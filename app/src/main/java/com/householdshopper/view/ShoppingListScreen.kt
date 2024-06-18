@@ -1,14 +1,19 @@
 package com.householdshopper.view
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,8 +21,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -40,6 +48,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,17 +78,14 @@ fun ShoppingListScreen(
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    var name by remember {
-        mutableStateOf("")
-    }
+    var name by remember { mutableStateOf("") }
+    var quantity by remember { mutableIntStateOf(1) }
+    var unit by remember { mutableStateOf("") }
 
-    var quantity by remember {
-        mutableIntStateOf(1)
-    }
-
-    var unit by remember {
-        mutableStateOf("")
-    }
+    // TODO - Implement validation
+    var nameError by remember { mutableStateOf("") }
+    var quantityError by remember { mutableStateOf("") }
+    var unitError by remember { mutableStateOf("") }
 
     viewModel.getSpecificShoppingList(listId!!)
 
@@ -106,7 +113,7 @@ fun ShoppingListScreen(
                 }
             },
             actions = {
-                IconButton(onClick = { /* do something */ }) {
+                IconButton(onClick = { /* TODO - assign user */ }) {
                     Icon(
                         imageVector = Icons.Filled.Person,
                         contentDescription = "Add person"
@@ -181,7 +188,9 @@ fun ShoppingListScreen(
 
                         OutlinedTextField(
                             value = name,
-                            onValueChange = {name = it},
+                            onValueChange = {
+                                name = it
+                                nameError = ""},
                             placeholder = { Text(text = "Product name", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)) },
                             shape = RoundedCornerShape(25),
                             colors = OutlinedTextFieldDefaults.colors(
@@ -207,7 +216,8 @@ fun ShoppingListScreen(
                     ){
                         OutlinedTextField(
                             value = quantity.toString(),
-                            onValueChange = {quantity = it.toInt()},
+                            onValueChange = {quantity = it.toInt()
+                                quantityError = ""},
                             label = { Text(text = "Quantity", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)) },
                             shape = RoundedCornerShape(25),
                             colors = OutlinedTextFieldDefaults.colors(
@@ -229,7 +239,9 @@ fun ShoppingListScreen(
 
                         OutlinedTextField(
                             value = unit,
-                            onValueChange = {unit = it},
+                            onValueChange = {
+                                unit = it
+                                unitError = ""},
                             label = { Text(text = "Unit", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)) },
                             shape = RoundedCornerShape(25),
                             colors = OutlinedTextFieldDefaults.colors(
@@ -240,6 +252,7 @@ fun ShoppingListScreen(
                                 focusedContainerColor = light_gray,
                             ),
                             textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onBackground),
+                            isError = unitError.isNotEmpty(),
                             modifier = Modifier
                                 .background(
                                     modal_background,
@@ -249,6 +262,25 @@ fun ShoppingListScreen(
                                 .padding(8.dp)
                         )
 
+                        IconButton(
+                            onClick = { quantity += 1 }
+                        ){
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(
+                            onClick = { quantity += -1 },
+                            enabled = quantity != 0
+                        ){
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Sub",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                     Row (
                         verticalAlignment = Alignment.CenterVertically,
@@ -257,12 +289,59 @@ fun ShoppingListScreen(
                         Text(
                             text = "UNIT",
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                            modifier = Modifier.padding(8.dp)
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(6.dp)
                         )
-
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = { unit = "kg" },
+                            colors = ButtonDefaults.buttonColors(containerColor = light_gray),
+                            modifier = Modifier.size(40.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "kg",
+                                color = Color.White,
+                                fontSize = 10.sp
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = { unit = "g" },
+                            colors = ButtonDefaults.buttonColors(containerColor = light_gray),
+                            modifier = Modifier.size(40.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(text = "g",
+                                color = Color.White,
+                                fontSize = 10.sp)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = { unit = "l" },
+                            colors = ButtonDefaults.buttonColors(containerColor = light_gray),
+                            modifier = Modifier.size(40.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(text = "l",
+                                color = Color.White,
+                                fontSize = 10.sp)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = { unit = "ml" },
+                            colors = ButtonDefaults.buttonColors(containerColor = light_gray),
+                            modifier = Modifier.size(40.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(text = "ml",
+                                color = Color.White,
+                                fontSize = 10.sp)
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
                         Button(onClick = {
                             scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                /* TODO- call function to add item to shopping list */
+                                viewModel.addNewItem(listId,name,quantity,unit)
                                 if (!sheetState.isVisible) {
                                     showBottomSheet = false
                                 }
@@ -270,7 +349,9 @@ fun ShoppingListScreen(
                         }) {
                             Text("Save")
                         }
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
         }
