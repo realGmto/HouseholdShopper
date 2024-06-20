@@ -2,10 +2,8 @@ package com.householdshopper.viewmodel
 
 import android.content.Context
 import android.widget.Toast
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.DocumentId
 import com.householdshopper.model.ShoppingList
 import com.householdshopper.model.repository.ShoppingListItemsRepository
 import com.householdshopper.model.repository.ShoppingListRepository
@@ -22,10 +20,28 @@ class ShoppingListViewModel @Inject constructor(
     private val _shoppingList = MutableStateFlow<ShoppingList?>(null)
     val shoppingList: StateFlow<ShoppingList?> = _shoppingList
 
-    fun getSpecificShoppingList( listId: String){
-        viewModelScope.launch {
+    private var documentID: String = ""
+    fun loadInitialData(listId: String){
+        documentID =listId
+        viewModelScope.launch{
             val result = shoppingListRepository.getSpecificShoppingList(listId)
             _shoppingList.value = result
+        }
+    }
+    // This is for shopping list
+    fun startListeningList(){
+        viewModelScope.launch {
+            shoppingListRepository.getSpecificShoppingListUpdates(documentID).collect{
+                _shoppingList.value = it
+            }
+        }
+    }
+    // This is for items
+    fun startListeningItems(){
+        viewModelScope.launch {
+            itemsRepository.getItemsUpdates(documentID).collect{
+                _shoppingList.value = _shoppingList.value?.copy(items = it)
+            }
         }
     }
 
@@ -52,8 +68,6 @@ class ShoppingListViewModel @Inject constructor(
         viewModelScope.launch {
             val result = itemsRepository.addItemToList(listId = _shoppingList.value?.documentId ?: "", name = name, quantity = quantity, unit = unit)
             // TODO - notify users that new item is added
-            if (result)
-                getSpecificShoppingList(_shoppingList.value?.documentId ?: "")
         }
     }
 
@@ -63,10 +77,7 @@ class ShoppingListViewModel @Inject constructor(
 
     fun removeItem(documentId: String){
         viewModelScope.launch{
-            val result = itemsRepository.removeItemFromList(listId = _shoppingList.value?.documentId ?: "", documentId = documentId)
-
-            if (result)
-                getSpecificShoppingList(_shoppingList.value?.documentId ?: "")
+            itemsRepository.removeItemFromList(listId = _shoppingList.value?.documentId ?: "", documentId = documentId)
         }
     }
 

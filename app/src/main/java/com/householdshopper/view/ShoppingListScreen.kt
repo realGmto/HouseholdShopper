@@ -1,7 +1,5 @@
 package com.householdshopper.view
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,6 +36,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -53,14 +51,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.householdshopper.model.ShoppingListItem
 import com.householdshopper.ui.theme.gray
 import com.householdshopper.ui.theme.light_gray
 import com.householdshopper.ui.theme.modal_background
-import com.householdshopper.view.recycleView.ShoppingListItem
 import com.householdshopper.view.recycleView.ShoppingListItemsItem
 import com.householdshopper.viewmodel.ShoppingListViewModel
 import kotlinx.coroutines.launch
@@ -70,7 +64,7 @@ import kotlinx.coroutines.launch
 fun ShoppingListScreen(
     navController: NavHostController,
     viewModel: ShoppingListViewModel,
-    listId : String?
+    listId : String
 ){
     val shoppingList by viewModel.shoppingList.collectAsState()
     val context = LocalContext.current
@@ -88,7 +82,11 @@ fun ShoppingListScreen(
     var quantityError by remember { mutableStateOf(false) }
     var unitError by remember { mutableStateOf(false) }
 
-    viewModel.getSpecificShoppingList(listId!!)
+    LaunchedEffect(Unit) {
+        viewModel.loadInitialData(listId)
+        viewModel.startListeningList()
+        viewModel.startListeningItems()
+    }
 
     Column (
         modifier = Modifier

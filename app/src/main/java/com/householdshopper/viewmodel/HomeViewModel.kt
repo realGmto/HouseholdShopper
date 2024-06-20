@@ -42,6 +42,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+
+    fun startShoppingListListening() {
+        viewModelScope.launch {
+            shoppingListRepository.getShoppingListsUpdates(household.value.householdId)
+                .collect { lists ->
+                    _shoppingLists.value = lists
+                }
+        }
+    }
+
     fun getActiveLists(){
         viewModelScope.launch{
             val result = shoppingListRepository.getAllShoppingLists(household.value.householdId)

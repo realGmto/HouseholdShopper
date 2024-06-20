@@ -86,7 +86,7 @@ fun ShoppingListItemsItem(item: ShoppingListItem, viewModel: ShoppingListViewMod
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                 )
             }
-            IconButton(onClick = {}) {
+            IconButton(onClick = { /* TODO - Implement edit functionality */}) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit",

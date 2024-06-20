@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                             CreateShoppingListScreen(navController = navController, createListViewModel = viewModel)
                         }
                         composable("list/{listId}"){backStackEntry ->
-                            val listId = backStackEntry.arguments?.getString("listId")
+                            val listId = backStackEntry.arguments?.getString("listId")!!
                             val viewModel = hiltViewModel<ShoppingListViewModel>()
                             ShoppingListScreen(navController = navController, viewModel = viewModel, listId= listId)
                         }
