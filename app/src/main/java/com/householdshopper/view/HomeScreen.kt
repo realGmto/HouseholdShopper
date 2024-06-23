@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.google.firebase.auth.FirebaseAuth
 import com.householdshopper.R
+import okhttp3.internal.wait
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,10 +66,6 @@ fun HomeScreen(
 
     var isExpanded by remember {
         mutableStateOf(false)
-    }
-    // This is for updating shoppingLists
-    LaunchedEffect(Unit) {
-        viewModel.updateLists(selectedItem)
     }
 
     Column(

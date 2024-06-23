@@ -22,53 +22,6 @@ class ShoppingListRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val collectionPath = "ShoppingLists"
 
-    suspend fun getAllShoppingLists(householdID: String): List<ShoppingList>{
-        return try {
-            val shoppingListsSnapshot = db.collection(collectionPath)
-                .whereEqualTo("householdID",householdID)
-                .get()
-                .await()
-
-            shoppingListsSnapshot.documents.mapNotNull { document ->
-                val shoppingList = try {
-                    document.toObject(ShoppingList::class.java)?.apply {
-                        documentId = document.id // Set the documentId
-                    }
-                } catch (e: Exception) {
-                    Log.e("Firestore", "Error converting document to ShoppingList", e)
-                    null
-                }
-                shoppingList?.let {
-                    val itemsSnapshot = try {
-                        document.reference.collection("items")
-                            .get()
-                            .await()
-                    } catch (e: Exception) {
-                        Log.e("Firestore", "Error fetching items subcollection for document ${document.id}", e)
-                        return@let null
-                    }
-
-                    val items = itemsSnapshot.documents.mapNotNull { itemDoc ->
-                        Log.d("Firestore", "Testing $itemDoc")
-                        try {
-                            itemDoc.toObject(ShoppingListItem::class.java)?.apply {
-                                documentId = itemDoc.id // Set the documentId
-                            }
-                        } catch (e: Exception) {
-                            Log.e("Firestore", "Error converting item document to ShoppingListItem", e)
-                            null
-                        }
-                    }
-
-                    shoppingList.copy(items = items)
-                }
-            }
-        } catch (e: Exception) {
-            println("Error getting shopping lists: $e")
-            emptyList()
-        }
-    }
-
     fun getShoppingListsUpdates(householdID: String): Flow<List<ShoppingList>> = callbackFlow {
         val listenerRegistration: ListenerRegistration = db.collection(collectionPath)
             .whereEqualTo("householdID",householdID)
@@ -87,50 +40,17 @@ class ShoppingListRepository @Inject constructor() {
         awaitClose { listenerRegistration.remove() }
     }
 
-    suspend fun getSpecificShoppingList(listID:String): ShoppingList?{
-        return try {
-            val document = db.collection(collectionPath)
-                .document(listID)
-                .get()
-                .await()
-
-            if (document.exists()) {
-                val shoppingList = document.toObject(ShoppingList::class.java)?.apply {
-                    this.documentId = document.id // Set the documentId
-                }
-
-                val itemsSnapshot = document.reference.collection("items")
-                    .get()
-                    .await()
-
-                val items = itemsSnapshot.documents.mapNotNull { itemDoc ->
-                    itemDoc.toObject(ShoppingListItem::class.java)?.apply {
-                        documentId = itemDoc.id // Set the documentId
-                    }
-                }
-
-                shoppingList?.copy(items = items)
-            } else {
-                null
-            }
-        } catch (e: Exception){
-            println("Error getting shopping lists: $e")
-            null
-        }
-    }
-
     fun getSpecificShoppingListUpdates(listId: String):Flow<ShoppingList> = callbackFlow{
         val listenerRegistration: ListenerRegistration = Firebase.firestore.collection("ShoppingLists")
             .document(listId)
             .addSnapshotListener(MetadataChanges.INCLUDE) { snapshot, e ->
-            if (e != null) {
-                close(e)
-                return@addSnapshotListener
-            }
-
-            val shoppingList = snapshot?.toObject(ShoppingList::class.java)?.apply {
-                documentId = snapshot.id
-            } ?: ShoppingList()
+                if (e != null) {
+                    close(e)
+                    return@addSnapshotListener
+                }
+                val shoppingList = snapshot?.toObject(ShoppingList::class.java)?.apply {
+                    documentId = snapshot.id
+                } ?: ShoppingList()
 
                 trySend(shoppingList).isSuccess
         }

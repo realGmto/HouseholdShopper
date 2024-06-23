@@ -9,6 +9,6 @@ data class ShoppingList (
     val creationDate: Timestamp? = null,
     val householdID: String = "",
     val name: String = "",
-    val items: List<ShoppingListItem> = emptyList(),
+    var items: List<ShoppingListItem> = emptyList(),
     var documentId: String = ""
 )

@@ -10,6 +10,7 @@ import com.householdshopper.model.repository.ShoppingListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
@@ -21,26 +22,21 @@ class ShoppingListViewModel @Inject constructor(
     val shoppingList: StateFlow<ShoppingList?> = _shoppingList
 
     private var documentID: String = ""
+
     fun loadInitialData(listId: String){
-        documentID =listId
-        viewModelScope.launch{
-            val result = shoppingListRepository.getSpecificShoppingList(listId)
-            _shoppingList.value = result
-        }
+        documentID = listId
+        startListeningList()
     }
-    // This is for shopping list
+
     fun startListeningList(){
         viewModelScope.launch {
-            shoppingListRepository.getSpecificShoppingListUpdates(documentID).collect{
-                _shoppingList.value = it
-            }
-        }
-    }
-    // This is for items
-    fun startListeningItems(){
-        viewModelScope.launch {
-            itemsRepository.getItemsUpdates(documentID).collect{
-                _shoppingList.value = _shoppingList.value?.copy(items = it)
+            val shoppingListFlow = shoppingListRepository.getSpecificShoppingListUpdates(documentID)
+            val itemsFlow = itemsRepository.getItemsUpdates(documentID)
+
+            combine(shoppingListFlow, itemsFlow) { shoppingList, items ->
+                shoppingList.copy(items = items)
+            }.collect { updatedShoppingList ->
+                _shoppingList.value = updatedShoppingList
             }
         }
     }

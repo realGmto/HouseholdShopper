@@ -84,8 +84,6 @@ fun ShoppingListScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadInitialData(listId)
-        viewModel.startListeningList()
-        viewModel.startListeningItems()
     }
 
     Column (

@@ -8,6 +8,7 @@ import com.householdshopper.model.ShoppingList
 import com.householdshopper.model.ShoppingListItem
 import com.householdshopper.model.repository.HouseholdRepository
 import com.householdshopper.model.repository.SharedDataRepository
+import com.householdshopper.model.repository.ShoppingListItemsRepository
 import com.householdshopper.model.repository.ShoppingListRepository
 import com.householdshopper.model.repository.UserRepository
 import com.householdshopper.ui.theme.green
@@ -15,6 +16,9 @@ import com.householdshopper.ui.theme.light_gray
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
@@ -22,10 +26,13 @@ class HomeViewModel @Inject constructor(
     private val shoppingListRepository: ShoppingListRepository,
     private val sharedDataRepository: SharedDataRepository,
     private val userRepository: UserRepository,
-    private val householdRepository: HouseholdRepository
+    private val householdRepository: HouseholdRepository,
+    private val itemsRepository: ShoppingListItemsRepository
 ): ViewModel() {
     private val _shoppingLists = MutableStateFlow<List<ShoppingList>>(emptyList())
     val shoppingLists: StateFlow<List<ShoppingList>> = _shoppingLists
+
+    private var allShoppingList: List<ShoppingList> = emptyList()
 
     val household = sharedDataRepository.household
 
@@ -39,32 +46,36 @@ class HomeViewModel @Inject constructor(
 
             sharedDataRepository.setUser(user)
             sharedDataRepository.setHousehold(household)
+
+            startListeningList()
         }
     }
 
 
-    fun startShoppingListListening() {
+    fun startListeningList() {
         viewModelScope.launch {
             shoppingListRepository.getShoppingListsUpdates(household.value.householdId)
-                .collect { lists ->
-                    _shoppingLists.value = lists
+                .flatMapLatest {lists ->
+                    val itemFlows = lists.map { list ->
+                        itemsRepository.getItemsUpdates(list.documentId).map { items -> list.copy(items = items) }
+                    }
+                    combine(itemFlows) { updateLists ->
+                        updateLists.toList()
+                    }
+                }
+                .collect { updatedLists ->
+                    allShoppingList = updatedLists
+                    updateLists(_selectedItem.value)
                 }
         }
     }
 
     fun getActiveLists(){
-        viewModelScope.launch{
-            val result = shoppingListRepository.getAllShoppingLists(household.value.householdId)
-            _shoppingLists.value = result.filter { countBoughtItems(it.items) != it.items.size}
-
-        }
+        _shoppingLists.value = allShoppingList.filter { countBoughtItems(it.items) != it.items.size}
     }
 
     fun getAllLists(){
-        viewModelScope.launch {
-            val result =shoppingListRepository.getAllShoppingLists(household.value.householdId)
-            _shoppingLists.value = result
-        }
+        _shoppingLists.value = allShoppingList
     }
 
     fun updateLists(choice: Int){

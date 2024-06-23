@@ -32,9 +32,6 @@ class ShoppingListItemsRepository @Inject constructor(){
                     doc.toObject<ShoppingListItem>()
                 } ?: emptyList()
 
-
-
-
                 trySend(itemsList).isSuccess
             }
         awaitClose { listenerRegistration.remove() }
