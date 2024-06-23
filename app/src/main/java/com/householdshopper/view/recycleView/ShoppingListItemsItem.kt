@@ -43,8 +43,6 @@ import com.kosher9.roundcheckbox.RoundCheckBox
 
 @Composable
 fun ShoppingListItemsItem(item: ShoppingListItem, viewModel: ShoppingListViewModel){
-    var roundCheckBoxState by remember { mutableStateOf(item.isBought) }
-
     Surface(
         modifier = Modifier
             .padding(8.dp)
@@ -61,11 +59,8 @@ fun ShoppingListItemsItem(item: ShoppingListItem, viewModel: ShoppingListViewMod
         ) {
             RoundCheckBox(
                 modifier = Modifier.width(60.dp),
-                isChecked = roundCheckBoxState,
-                onClick = {
-                    roundCheckBoxState = !roundCheckBoxState
-                    viewModel.updateBoughtStatus(item.documentId,roundCheckBoxState)
-                    },
+                isChecked = item.isBought,
+                onClick = { viewModel.updateBoughtStatus(item.documentId,!item.isBought) },
                 enabled = true
             )
             Spacer(modifier = Modifier.width(8.dp))

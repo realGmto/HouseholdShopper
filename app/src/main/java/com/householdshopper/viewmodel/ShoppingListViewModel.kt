@@ -21,17 +21,17 @@ class ShoppingListViewModel @Inject constructor(
     private val _shoppingList = MutableStateFlow<ShoppingList?>(null)
     val shoppingList: StateFlow<ShoppingList?> = _shoppingList
 
-    private var documentID: String = ""
+    private var listID: String = ""
 
     fun loadInitialData(listId: String){
-        documentID = listId
+        listID = listId
         startListeningList()
     }
 
     fun startListeningList(){
         viewModelScope.launch {
-            val shoppingListFlow = shoppingListRepository.getSpecificShoppingListUpdates(documentID)
-            val itemsFlow = itemsRepository.getItemsUpdates(documentID)
+            val shoppingListFlow = shoppingListRepository.getSpecificShoppingListUpdates(listID)
+            val itemsFlow = itemsRepository.getItemsUpdates(listID)
 
             combine(shoppingListFlow, itemsFlow) { shoppingList, items ->
                 shoppingList.copy(items = items)
@@ -62,7 +62,7 @@ class ShoppingListViewModel @Inject constructor(
 
     fun addNewItem(name: String,quantity:Int,unit:String){
         viewModelScope.launch {
-            val result = itemsRepository.addItemToList(listId = _shoppingList.value?.documentId ?: "", name = name, quantity = quantity, unit = unit)
+            val result = itemsRepository.addItemToList(listId = listID, name = name, quantity = quantity, unit = unit)
             // TODO - notify users that new item is added
         }
     }
@@ -73,13 +73,13 @@ class ShoppingListViewModel @Inject constructor(
 
     fun removeItem(documentId: String){
         viewModelScope.launch{
-            itemsRepository.removeItemFromList(listId = _shoppingList.value?.documentId ?: "", documentId = documentId)
+            itemsRepository.removeItemFromList(listId = listID, documentId = documentId)
         }
     }
 
     fun updateBoughtStatus(documentId: String, state:Boolean){
         viewModelScope.launch{
-            itemsRepository.updateIsBought(listId = _shoppingList.value?.documentId ?: "", documentId = documentId, state = state)
+            itemsRepository.updateIsBought(listId = listID, documentId = documentId, state = state)
         }
     }
 }

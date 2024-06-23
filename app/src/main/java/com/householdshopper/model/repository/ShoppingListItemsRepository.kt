@@ -29,7 +29,7 @@ class ShoppingListItemsRepository @Inject constructor(){
                 }
 
                 val itemsList = snapshots?.documents?.mapNotNull { doc ->
-                    doc.toObject<ShoppingListItem>()
+                    doc.toObject<ShoppingListItem>()?.apply { documentId = doc.id }
                 } ?: emptyList()
 
                 trySend(itemsList).isSuccess
