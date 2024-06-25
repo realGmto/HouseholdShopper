@@ -43,7 +43,8 @@ fun UserItem(
                 modifier = Modifier.padding(4.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { /*TODO - implement kicking member out*/ }) {
+            // TODO - Add condition where you can't kick yourself
+            IconButton(onClick = { viewModel.removeMemberFromHousehold(userID = user.documentId) }) {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Kick member",

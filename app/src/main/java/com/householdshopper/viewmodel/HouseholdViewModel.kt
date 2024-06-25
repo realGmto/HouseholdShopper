@@ -2,6 +2,7 @@ package com.householdshopper.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.householdshopper.model.ResultMessage
 import com.householdshopper.model.User
 import com.householdshopper.model.repository.HouseholdRepository
 import com.householdshopper.model.repository.SharedDataRepository
@@ -20,6 +21,9 @@ class HouseholdViewModel @Inject constructor(
 ): ViewModel(){
     val household = sharedDataRepository.household
 
+    private val _resultMessage = MutableStateFlow(ResultMessage())
+    val resultMessage: StateFlow<ResultMessage> = _resultMessage
+
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users: StateFlow<List<User>> = _users
 
@@ -36,6 +40,9 @@ class HouseholdViewModel @Inject constructor(
     }
 
     fun removeMemberFromHousehold(userID:String){
-
+        viewModelScope.launch {
+            val result = householdRepository.removeUserFromHousehold(userID = userID,household.value.householdId)
+            _resultMessage.value = result
+        }
     }
 }

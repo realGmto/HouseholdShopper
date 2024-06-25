@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,6 +54,7 @@ fun HouseholdScreen(
 ){
     val household by viewModel.household.collectAsState()
     val users by viewModel.users.collectAsState()
+    val resultMessage by viewModel.resultMessage.collectAsState()
 
     var isExpanded by remember {
         mutableStateOf(false)
@@ -140,6 +142,19 @@ fun HouseholdScreen(
                         UserItem(user = it, viewModel = viewModel)
                     }
                 )
+            }
+            resultMessage.let {
+                if(it.success){
+                    Text(
+                        text = it.message,
+                        color = Color.Green
+                    )
+                }else{
+                    Text(
+                        text = it.message,
+                        color = Color.Red
+                    )
+                }
             }
             FloatingActionButton(
                 onClick = { /* TODO - navigation to adding new user*/ },

@@ -3,19 +3,22 @@ package com.householdshopper.model.repository
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.householdshopper.model.Household
 import com.householdshopper.model.HouseholdResult
 import com.householdshopper.model.RegisterResult
+import com.householdshopper.model.ResultMessage
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class HouseholdRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
+    private val collectionPath = "Households"
     suspend fun getSpecificHousehold(householdID: String):Household{
         return try {
-            val document = db.collection("Households").document(householdID)
+            val document = db.collection(collectionPath).document(householdID)
                 .get()
                 .await()
 
@@ -29,7 +32,7 @@ class HouseholdRepository @Inject constructor() {
 
     suspend fun getAllHouseholds(): List<Household>{
         return try {
-            val document = db.collection("Households")
+            val document = db.collection(collectionPath)
                 .get()
                 .await()
             document.documents.mapNotNull { doc ->
@@ -51,7 +54,7 @@ class HouseholdRepository @Inject constructor() {
             )
 
             if (userId != null) {
-                val document = db.collection("Households")
+                val document = db.collection(collectionPath)
                     .add(household)
                     .await()
 
@@ -67,6 +70,25 @@ class HouseholdRepository @Inject constructor() {
         }catch (e:Exception){
             println(e.message)
             HouseholdResult(success = false, message = "Error has occurred")
+        }
+    }
+
+    suspend fun removeUserFromHousehold(userID: String,householdID: String): ResultMessage{
+        return try {
+            db.collection(collectionPath)
+                .document(householdID)
+                .update("members",FieldValue.arrayRemove(userID))
+                .await()
+
+            db.collection("Users")
+                .document(userID)
+                .update("householdID","")
+                .await()
+
+            ResultMessage(success = true, message = "Successfully kicked user out of the household")
+        }catch (e:Exception){
+            println(e.message)
+            ResultMessage(success = false, message = "There was an error while trying to kick user out of the Household")
         }
     }
 }
