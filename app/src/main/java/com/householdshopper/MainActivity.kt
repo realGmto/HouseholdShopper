@@ -25,7 +25,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.householdshopper.model.repository.SharedDataRepository
 import com.householdshopper.view.CreateShoppingListScreen
+import com.householdshopper.view.HouseholdScreen
 import com.householdshopper.viewmodel.CreateListViewModel
+import com.householdshopper.viewmodel.HouseholdViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -62,6 +64,10 @@ class MainActivity : ComponentActivity() {
                             val listId = backStackEntry.arguments?.getString("listId")!!
                             val viewModel = hiltViewModel<ShoppingListViewModel>()
                             ShoppingListScreen(navController = navController, viewModel = viewModel, listId= listId)
+                        }
+                        composable("household"){
+                            val viewModel = hiltViewModel<HouseholdViewModel>()
+                            HouseholdScreen(navController = navController, viewModel = viewModel)
                         }
                     }
                 }

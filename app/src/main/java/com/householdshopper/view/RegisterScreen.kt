@@ -141,7 +141,7 @@ fun RegisterScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
-            onClick = {viewModel.register(username = username, email = email, password = password, householdId = "")},
+            onClick = {viewModel.register(username = username, email = email, password = password, repeatPassword = repeatPassword, householdId = "")},
             modifier = Modifier.width(150.dp)
         ) {
             Text(text = "Register")
