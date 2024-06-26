@@ -6,5 +6,6 @@ import com.google.firebase.firestore.DocumentId
 data class User(
     val householdID: String = "",
     val username: String = "",
-    var documentId: String = ""
+    var documentId: String = "",
+    val token: String = ""
 )

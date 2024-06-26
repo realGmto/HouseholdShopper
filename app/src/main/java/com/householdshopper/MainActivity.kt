@@ -1,5 +1,6 @@
 package com.householdshopper
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,7 @@ import com.householdshopper.viewmodel.LoginViewModel
 import com.householdshopper.viewmodel.RegisterViewModel
 import com.householdshopper.viewmodel.ShoppingListViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.householdshopper.model.repository.SharedDataRepository
 import com.householdshopper.view.CreateShoppingListScreen

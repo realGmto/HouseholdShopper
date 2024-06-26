@@ -1,5 +1,6 @@
 package com.householdshopper.view
 
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,14 +15,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -45,13 +43,9 @@ import com.householdshopper.view.recycleView.ShoppingListItem
 import com.householdshopper.viewmodel.HomeViewModel
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.auth.FirebaseAuth
-import com.householdshopper.R
-import okhttp3.internal.wait
+import kotlinx.coroutines.coroutineScope
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,8 +59,14 @@ fun HomeScreen(
 
     val selectedItem by viewModel.selectedItem.collectAsState()
 
+    val context = LocalContext.current
+
     var isExpanded by remember {
         mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.sendMessage(context)
     }
 
     Column(

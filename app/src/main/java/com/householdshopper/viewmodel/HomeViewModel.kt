@@ -1,11 +1,13 @@
 package com.householdshopper.viewmodel
 
+import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.householdshopper.model.ShoppingList
 import com.householdshopper.model.ShoppingListItem
+import com.householdshopper.model.repository.FirebaseMessageRepository
 import com.householdshopper.model.repository.HouseholdRepository
 import com.householdshopper.model.repository.SharedDataRepository
 import com.householdshopper.model.repository.ShoppingListItemsRepository
@@ -27,7 +29,8 @@ class HomeViewModel @Inject constructor(
     private val sharedDataRepository: SharedDataRepository,
     private val userRepository: UserRepository,
     private val householdRepository: HouseholdRepository,
-    private val itemsRepository: ShoppingListItemsRepository
+    private val itemsRepository: ShoppingListItemsRepository,
+    private val firebaseMessageRepository: FirebaseMessageRepository
 ): ViewModel() {
     private val _shoppingLists = MutableStateFlow<List<ShoppingList>>(emptyList())
     val shoppingLists: StateFlow<List<ShoppingList>> = _shoppingLists
@@ -48,6 +51,13 @@ class HomeViewModel @Inject constructor(
             sharedDataRepository.setHousehold(household)
 
             startListeningList()
+            firebaseMessageRepository.getTokenAndSendToServer()
+        }
+    }
+
+    fun sendMessage(context: Context){
+        viewModelScope.launch {
+            firebaseMessageRepository.sendNotification(userId = FirebaseAuth.getInstance().currentUser?.uid ?: "", title = "Test title", body = "Test body", context =context)
         }
     }
 

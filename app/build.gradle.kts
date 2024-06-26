@@ -50,6 +50,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/INDEX.LIST"
+            excludes += "/META-INF/DEPENDENCIES"
         }
     }
 }
@@ -85,6 +87,12 @@ dependencies {
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    implementation ("com.google.firebase:firebase-messaging:24.0.0")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.23.0")
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("com.google.accompanist:accompanist-permissions:0.30.1")
 
     implementation ("com.github.kosher9:Compose-Round-CheckBox:1.0.0")
 }

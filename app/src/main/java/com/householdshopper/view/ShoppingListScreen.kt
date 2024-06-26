@@ -48,10 +48,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.householdshopper.R
 import com.householdshopper.ui.theme.gray
 import com.householdshopper.ui.theme.light_gray
 import com.householdshopper.ui.theme.modal_background
@@ -275,7 +277,7 @@ fun ShoppingListScreen(
                             enabled = quantity != 0
                         ){
                             Icon(
-                                imageVector = Icons.Default.Close,
+                                painter = painterResource(id = R.drawable.baseline_remove_24),
                                 contentDescription = "Sub",
                                 tint = MaterialTheme.colorScheme.primary
                             )
