@@ -45,4 +45,8 @@ class HouseholdViewModel @Inject constructor(
             _resultMessage.value = result
         }
     }
+
+    fun isOwner(userID: String): Boolean {
+        return household.value.creator == userID
+    }
 }

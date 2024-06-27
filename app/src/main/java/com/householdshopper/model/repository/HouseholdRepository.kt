@@ -49,8 +49,8 @@ class HouseholdRepository @Inject constructor() {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
 
             val household = hashMapOf(
-                "name" to name,
-                "members" to arrayOf(userId)
+                "creator" to userId,
+                "name" to name
             )
 
             if (userId != null) {
@@ -75,11 +75,6 @@ class HouseholdRepository @Inject constructor() {
 
     suspend fun removeUserFromHousehold(userID: String,householdID: String): ResultMessage{
         return try {
-            db.collection(collectionPath)
-                .document(householdID)
-                .update("members",FieldValue.arrayRemove(userID))
-                .await()
-
             db.collection("Users")
                 .document(userID)
                 .update("householdID","")

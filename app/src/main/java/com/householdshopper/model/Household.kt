@@ -1,7 +1,7 @@
 package com.householdshopper.model
 
 data class Household (
-    val members: List<String> = emptyList(),
+    val creator: String ="",
     val name: String = "",
     var householdId: String = ""
 )
