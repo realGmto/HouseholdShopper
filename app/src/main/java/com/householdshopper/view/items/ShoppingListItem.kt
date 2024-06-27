@@ -1,4 +1,4 @@
-package com.householdshopper.view.recycleView
+package com.householdshopper.view.items
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

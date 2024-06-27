@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -57,7 +56,7 @@ import com.householdshopper.R
 import com.householdshopper.ui.theme.gray
 import com.householdshopper.ui.theme.light_gray
 import com.householdshopper.ui.theme.modal_background
-import com.householdshopper.view.recycleView.ShoppingListItemsItem
+import com.householdshopper.view.items.ShoppingListItemsItem
 import com.householdshopper.viewmodel.ShoppingListViewModel
 import kotlinx.coroutines.launch
 

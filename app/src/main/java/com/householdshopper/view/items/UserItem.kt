@@ -1,4 +1,4 @@
-package com.householdshopper.view.recycleView
+package com.householdshopper.view.items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,13 +42,16 @@ fun UserItem(
                 modifier = Modifier.padding(4.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
-            // TODO - Add condition where you can't kick yourself
-            IconButton(onClick = { viewModel.removeMemberFromHousehold(userID = user.documentId) }) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Kick member",
-                    tint = MaterialTheme.colorScheme.error
-                )
+            if ( viewModel.isOwner(user.documentId)){
+                Text(text = "Owner", modifier = Modifier.padding(4.dp))
+            }else{
+                IconButton(onClick = { viewModel.removeMemberFromHousehold(userID = user.documentId) }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Kick member",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }
