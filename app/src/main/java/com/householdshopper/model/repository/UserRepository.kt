@@ -1,9 +1,7 @@
 package com.householdshopper.model.repository
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.toObject
 import com.householdshopper.model.User
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -76,6 +74,19 @@ class UserRepository @Inject constructor() {
         }catch (e: Exception){
             println("Error has occurred")
             User()
+        }
+    }
+
+    suspend fun updateHousehold(userID: String, householdID: String):Boolean{
+        return try {
+            db.collection(collectionPath)
+                .document(userID)
+                .update("householdID",householdID)
+                .await()
+            true
+        }catch (e:Exception){
+            println(e.message)
+            false
         }
     }
 }

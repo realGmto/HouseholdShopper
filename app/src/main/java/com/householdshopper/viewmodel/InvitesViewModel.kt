@@ -1,13 +1,14 @@
 package com.householdshopper.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.householdshopper.model.Invite
 import com.householdshopper.model.User
+import com.householdshopper.model.repository.FirebaseMessageRepository
 import com.householdshopper.model.repository.InviteRepository
 import com.householdshopper.model.repository.SharedDataRepository
 import com.householdshopper.model.repository.UserRepository
-import com.householdshopper.view.items.SendInviteItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class InvitesViewModel @Inject constructor(
     private val inviteRepository: InviteRepository,
     private val userRepository: UserRepository,
-    private val sharedDataRepository: SharedDataRepository
+    private val sharedDataRepository: SharedDataRepository,
+    private val firebaseMessageRepository: FirebaseMessageRepository
 ): ViewModel() {
     private val _selectedItem = MutableStateFlow(0)
     val selectedItem: StateFlow<Int> = _selectedItem
@@ -71,5 +73,30 @@ class InvitesViewModel @Inject constructor(
             _invites.value = sendInvites
         else if (choice == 1)
             _invites.value = receivedInvites
+    }
+
+    fun acceptRequest(invite: Invite, context: Context){
+        viewModelScope.launch {
+            val sender: User = getUser(invite.from)
+
+            val title = "Invite"
+            val body = "Your invite to the ${sender.username}, has been accepted."
+
+            firebaseMessageRepository.sendNotification(userId = sender.documentId, title = title, body = body, context = context)
+            userRepository.updateHousehold(userID = invite.to, householdID = sender.householdID)
+            inviteRepository.deleteInvite(invite.documentId)
+        }
+    }
+
+    fun declineRequest(invite: Invite,context: Context){
+        viewModelScope.launch {
+            val sender: User = getUser(invite.from)
+
+            val title = "Invite"
+            val body = "Your invite to the ${sender.username}, has been declined."
+
+            firebaseMessageRepository.sendNotification(userId = sender.documentId, title = title, body = body, context = context)
+            inviteRepository.deleteInvite(invite.documentId)
+        }
     }
 }

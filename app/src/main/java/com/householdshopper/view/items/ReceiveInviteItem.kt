@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
@@ -30,6 +31,7 @@ fun ReceiveInviteItem(invite: Invite, viewModel: InvitesViewModel){
     val name by remember {
         mutableStateOf(viewModel.getUser(invite.from).username)
     }
+    val context = LocalContext.current
     Surface(
         modifier = Modifier
             .padding(8.dp)
@@ -56,10 +58,10 @@ fun ReceiveInviteItem(invite: Invite, viewModel: InvitesViewModel){
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(16.dp)
             ){
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { viewModel.acceptRequest(invite = invite, context = context) }) {
                     Text(text = "Accept", color = green)
                 }
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { viewModel.declineRequest(invite = invite, context = context) }) {
                     Text(text = "Decline", color = red)
                 }
             }

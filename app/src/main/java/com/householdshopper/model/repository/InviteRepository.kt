@@ -1,5 +1,6 @@
 package com.householdshopper.model.repository
 
+import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
@@ -8,6 +9,7 @@ import com.householdshopper.model.ShoppingList
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class InviteRepository @Inject constructor() {
@@ -48,5 +50,18 @@ class InviteRepository @Inject constructor() {
                 trySend(requests).isSuccess
             }
         awaitClose{ listenerRegistration.remove() }
+    }
+
+    suspend fun deleteInvite(documentId: String):Boolean{
+        return try {
+            db.collection(collectionPath)
+                .document(documentId)
+                .delete()
+                .await()
+            true
+        }catch (e:Exception){
+            println(e.message)
+            false
+        }
     }
 }
