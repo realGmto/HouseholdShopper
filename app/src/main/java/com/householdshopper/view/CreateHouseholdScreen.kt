@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.householdshopper.ui.theme.gray
 import com.householdshopper.ui.theme.light_gray
+import com.householdshopper.view.components.RestrictedTopBar
 import com.householdshopper.viewmodel.CreateHouseholdViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,19 +48,7 @@ fun CreateHouseholdScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        CenterAlignedTopAppBar(
-            modifier = Modifier.background(gray),
-            title = { Text("Create Household") },
-            navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Go back"
-                    )
-                }
-            }
-        )
-
+        RestrictedTopBar(title = "Create Household", navController = navController)
         OutlinedTextField(
             value = name,
             onValueChange = {name = it},
