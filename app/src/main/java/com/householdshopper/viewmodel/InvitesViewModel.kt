@@ -21,7 +21,7 @@ class InvitesViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val sharedDataRepository: SharedDataRepository,
     private val firebaseMessageRepository: FirebaseMessageRepository
-): ViewModel() {
+): ViewModel(),InviteViewModel {
     private val _selectedItem = MutableStateFlow(0)
     val selectedItem: StateFlow<Int> = _selectedItem
 
@@ -55,7 +55,6 @@ class InvitesViewModel @Inject constructor(
                 receivedInvites = it
             }
         }
-
     }
 
     private fun startListeningUsers(){
@@ -67,7 +66,7 @@ class InvitesViewModel @Inject constructor(
         }
     }
 
-    fun getUser(userID: String): User{
+    override fun getUser(userID: String): User{
         return _users.value.first{user ->
             user.documentId == userID
         }
@@ -82,7 +81,7 @@ class InvitesViewModel @Inject constructor(
             _invites.value = receivedInvites
     }
 
-    fun acceptRequest(invite: Invite, context: Context){
+    override fun acceptRequest(invite: Invite, context: Context){
         viewModelScope.launch {
             val sender: User = getUser(invite.from)
 
@@ -95,7 +94,7 @@ class InvitesViewModel @Inject constructor(
         }
     }
 
-    fun declineRequest(invite: Invite,context: Context){
+    override fun declineRequest(invite: Invite, context: Context){
         viewModelScope.launch {
             val sender: User = getUser(invite.from)
 

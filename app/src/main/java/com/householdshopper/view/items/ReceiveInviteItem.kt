@@ -28,10 +28,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Text
 import com.householdshopper.model.Invite
+import com.householdshopper.viewmodel.InviteViewModel
 import com.householdshopper.viewmodel.InvitesViewModel
 
 @Composable
-fun ReceiveInviteItem(invite: Invite, viewModel: InvitesViewModel) {
+fun ReceiveInviteItem(invite: Invite, viewModel: InviteViewModel) {
     val name by remember {
         mutableStateOf(viewModel.getUser(invite.from).username)
     }
