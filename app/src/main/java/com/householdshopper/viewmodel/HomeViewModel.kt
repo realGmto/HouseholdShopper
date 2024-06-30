@@ -55,13 +55,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(context: Context, title: String,body: String){
-        viewModelScope.launch {
-            firebaseMessageRepository.sendNotification(userId = FirebaseAuth.getInstance().currentUser?.uid ?: "", title = title, body = body, context =context)
-        }
-    }
-
-
     private fun startListeningList() {
         viewModelScope.launch {
             shoppingListRepository.getShoppingListsUpdates(household.value.householdId)

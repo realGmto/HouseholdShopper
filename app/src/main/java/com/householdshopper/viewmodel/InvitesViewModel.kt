@@ -37,25 +37,32 @@ class InvitesViewModel @Inject constructor(
 
 
     init {
-        startListeningInvites()
+        startListeningSendInvites()
+        startListeningReceivedInvites()
         startListeningUsers()
-        updateInvites(0)
     }
-    private fun startListeningInvites(){
+    private fun startListeningSendInvites(){
         viewModelScope.launch {
             inviteRepository.getSendInvitesUpdates(userID = user.documentId).collect{
                 sendInvites = it
             }
+        }
+    }
+
+    private fun startListeningReceivedInvites(){
+        viewModelScope.launch {
             inviteRepository.getReceivedInvitesUpdates(userID = user.documentId).collect{
                 receivedInvites = it
             }
         }
+
     }
 
     private fun startListeningUsers(){
         viewModelScope.launch {
             userRepository.getAllUsersUpdates().collect{
                 _users.value = it
+                updateInvites(_selectedItem.value)  // Must be called here or it won't load initially
             }
         }
     }
