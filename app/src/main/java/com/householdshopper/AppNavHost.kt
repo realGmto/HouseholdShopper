@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.google.firebase.auth.FirebaseUser
+import com.householdshopper.view.AddMemberScreen
 import com.householdshopper.view.CreateShoppingListScreen
 import com.householdshopper.view.HomeScreen
 import com.householdshopper.view.HouseholdScreen
@@ -17,6 +18,7 @@ import com.householdshopper.view.InvitesScreen
 import com.householdshopper.view.LoginScreen
 import com.householdshopper.view.RegisterScreen
 import com.householdshopper.view.ShoppingListScreen
+import com.householdshopper.viewmodel.AddMemberViewModel
 import com.householdshopper.viewmodel.CreateListViewModel
 import com.householdshopper.viewmodel.HomeViewModel
 import com.householdshopper.viewmodel.HouseholdViewModel
@@ -66,6 +68,18 @@ fun AppNavHost(navController: NavHostController, currentUser: FirebaseUser?){
         ){
             val viewModel = hiltViewModel<InvitesViewModel>()
             InvitesScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(
+            route = "addMember",
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "$uri/addMember"
+                    action = Intent.ACTION_VIEW
+                }
+            )
+        ){
+            val viewModel = hiltViewModel<AddMemberViewModel>()
+            AddMemberScreen(viewModel = viewModel, navController = navController)
         }
     }
 }

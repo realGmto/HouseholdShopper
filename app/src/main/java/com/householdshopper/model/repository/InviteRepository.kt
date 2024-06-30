@@ -64,4 +64,20 @@ class InviteRepository @Inject constructor() {
             false
         }
     }
+
+    suspend fun createInvite(from: String, to:String):Boolean{
+        return try {
+            val invite = hashMapOf(
+                "from" to from,
+                "to" to to
+            )
+            db.collection(collectionPath)
+                .add(invite)
+                .await()
+            true
+        }catch (e:Exception){
+            println(e.message)
+            false
+        }
+    }
 }

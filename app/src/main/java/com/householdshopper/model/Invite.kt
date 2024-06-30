@@ -5,3 +5,8 @@ data class Invite (
     var to: String = "",
     var documentId: String = ""
 )
+
+enum class InviteStatus {
+    NOT_INVITED,
+    INVITED
+}

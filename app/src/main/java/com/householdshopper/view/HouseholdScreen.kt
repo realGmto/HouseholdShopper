@@ -74,7 +74,7 @@ fun HouseholdScreen(
                 }
             }
             FloatingActionButton(
-                onClick = { /* TODO - navigation to adding new user*/ },
+                onClick = { navController.navigate("addMember") },
                 modifier = Modifier
                     .padding(16.dp)
                     .align(Alignment.BottomEnd)

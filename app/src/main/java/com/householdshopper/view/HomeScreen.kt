@@ -46,12 +46,6 @@ fun HomeScreen(
 
     val selectedItem by viewModel.selectedItem.collectAsState()
 
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        viewModel.sendMessage(context, title = "Test title", body = "Test body")
-    }
-
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
