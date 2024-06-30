@@ -55,14 +55,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(context: Context){
+    fun sendMessage(context: Context, title: String,body: String){
         viewModelScope.launch {
-            firebaseMessageRepository.sendNotification(userId = FirebaseAuth.getInstance().currentUser?.uid ?: "", title = "Test title", body = "Test body", context =context)
+            firebaseMessageRepository.sendNotification(userId = FirebaseAuth.getInstance().currentUser?.uid ?: "", title = title, body = body, context =context)
         }
     }
 
 
-    fun startListeningList() {
+    private fun startListeningList() {
         viewModelScope.launch {
             shoppingListRepository.getShoppingListsUpdates(household.value.householdId)
                 .flatMapLatest {lists ->
@@ -80,11 +80,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getActiveLists(){
+    private fun getActiveLists(){
         _shoppingLists.value = allShoppingList.filter { countBoughtItems(it.items) != it.items.size}
     }
 
-    fun getAllLists(){
+    private fun getAllLists(){
         _shoppingLists.value = allShoppingList
     }
 

@@ -5,13 +5,17 @@ import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_DEFAULT
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+import android.net.Uri
 import android.os.Build
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.householdshopper.MainActivity
 import com.householdshopper.R
 import kotlin.random.Random
 
@@ -31,13 +35,13 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
     }
 
     private fun sendNotification(message: RemoteMessage.Notification) {
-        val intent = Intent(this, MyFirebaseMessagingService::class.java).apply {
-            putExtra("navigateTo","home")
-            addFlags(FLAG_ACTIVITY_CLEAR_TOP)
+        val intent = Intent(this, MainActivity::class.java).apply {
+            data = Uri.parse("https://household-shopper.com/invite")
+            addFlags(FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP)
         }
 
         val pendingIntent = PendingIntent.getActivity(
-            this, 0, intent, FLAG_IMMUTABLE
+            this, 0, intent, FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
         )
 
         val channelId = getString(R.string.default_notification_channel_id)
