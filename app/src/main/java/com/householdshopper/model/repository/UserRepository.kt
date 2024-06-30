@@ -30,6 +30,23 @@ class UserRepository @Inject constructor() {
         }
     }
 
+    fun getAllUsersUpdates():Flow<List<User>> = callbackFlow{
+        val listenerRegistration: ListenerRegistration = db.collection(collectionPath)
+            .addSnapshotListener{snapshot, e ->
+                if (e != null) {
+                    close(e)
+                    return@addSnapshotListener
+                }
+
+                val users = snapshot?.documents?.mapNotNull { doc->
+                    doc.toObject(User::class.java)?.apply { documentId = doc.id }
+                }?: emptyList()
+
+                trySend(users).isSuccess
+            }
+        awaitClose{ listenerRegistration.remove() }
+    }
+
     fun getSpecificUsersUpdates(householdID: String): Flow<List<User>> = callbackFlow{
         val listenerRegistration: ListenerRegistration = db.collection(collectionPath)
             .whereEqualTo("householdID",householdID)

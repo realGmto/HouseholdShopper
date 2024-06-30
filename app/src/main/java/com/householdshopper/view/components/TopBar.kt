@@ -91,7 +91,7 @@ fun TopBar(title: String,navController: NavHostController){
                     },
                     onClick = {
                         isExpanded = false
-                        navController.navigate("invites")
+                        navController.navigate("invite")
                     }
                 )
                 DropdownMenuItem(

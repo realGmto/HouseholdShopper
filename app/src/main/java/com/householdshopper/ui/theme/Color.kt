@@ -17,5 +17,6 @@ val light_gray = Color(0xFF4B4C4C)
 val dark_white = Color(0xFFD9D9D9)
 val light_green = Color(0xFF4EF354)
 val green = Color(0xFF198754)
+val red = Color(0xFFd90d2f)
 
 val modal_background = Color(0xFF1D2528)
