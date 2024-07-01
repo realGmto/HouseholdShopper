@@ -58,7 +58,7 @@ fun AppNavHost(navController: NavHostController, currentUser: FirebaseUser?, inH
         }
         composable("createList"){
             val viewModel = hiltViewModel<CreateListViewModel>()
-            CreateShoppingListScreen(navController = navController, createListViewModel = viewModel)
+            CreateShoppingListScreen(navController = navController, viewModel = viewModel)
         }
         composable("list/{listId}"){backStackEntry ->
             val listId = backStackEntry.arguments?.getString("listId")!!
