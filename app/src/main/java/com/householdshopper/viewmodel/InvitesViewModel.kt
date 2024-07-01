@@ -3,6 +3,7 @@ package com.householdshopper.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.householdshopper.model.Invite
 import com.householdshopper.model.User
 import com.householdshopper.model.repository.FirebaseMessageRepository
@@ -81,7 +82,7 @@ class InvitesViewModel @Inject constructor(
             _invites.value = receivedInvites
     }
 
-    override fun acceptRequest(invite: Invite, context: Context){
+    override fun acceptRequest(invite: Invite, context: Context, navHostController: NavHostController){
         viewModelScope.launch {
             val sender: User = getUser(invite.from)
 
@@ -91,6 +92,7 @@ class InvitesViewModel @Inject constructor(
             firebaseMessageRepository.sendNotification(userId = sender.documentId, title = title, body = body, context = context)
             userRepository.updateHousehold(userID = invite.to, householdID = sender.householdID)
             inviteRepository.deleteInvite(invite.documentId)
+            navHostController.navigate("home")
         }
     }
 
