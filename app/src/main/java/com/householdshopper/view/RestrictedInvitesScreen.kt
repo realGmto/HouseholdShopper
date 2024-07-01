@@ -39,7 +39,7 @@ fun RestrictedInvitesScreen(
             items(
                 items = invites,
                 itemContent = {
-                    ReceiveInviteItem(invite = it, viewModel = viewModel)
+                    ReceiveInviteItem(invite = it, viewModel = viewModel, navHostController = navController)
                 }
             )
         }

@@ -1,7 +1,5 @@
 package com.householdshopper.view.items
 
-import android.graphics.Color
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,13 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Text
 import com.householdshopper.model.Invite
 import com.householdshopper.viewmodel.InviteViewModel
-import com.householdshopper.viewmodel.InvitesViewModel
 
 @Composable
-fun ReceiveInviteItem(invite: Invite, viewModel: InviteViewModel) {
+fun ReceiveInviteItem(invite: Invite, viewModel: InviteViewModel, navHostController: NavHostController) {
     val name by remember {
         mutableStateOf(viewModel.getUser(invite.from).username)
     }
@@ -63,7 +61,7 @@ fun ReceiveInviteItem(invite: Invite, viewModel: InviteViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { viewModel.acceptRequest(invite = invite, context = context) },
+                    onClick = { viewModel.acceptRequest(invite = invite, context = context, navHostController = navHostController) },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(

@@ -60,7 +60,7 @@ fun InvitesScreen(
                             SendInviteItem(invite = it, viewModel = viewModel)
                         }
                         else{
-                            ReceiveInviteItem(invite = it, viewModel = viewModel)
+                            ReceiveInviteItem(invite = it, viewModel = viewModel, navHostController = navController)
                         }
                     }
                 )
