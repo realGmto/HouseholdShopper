@@ -1,9 +1,11 @@
 package com.householdshopper.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.householdshopper.model.ResultMessage
 import com.householdshopper.model.User
+import com.householdshopper.model.repository.FirebaseMessageRepository
 import com.householdshopper.model.repository.HouseholdRepository
 import com.householdshopper.model.repository.SharedDataRepository
 import com.householdshopper.model.repository.UserRepository
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class HouseholdViewModel @Inject constructor(
     private val sharedDataRepository: SharedDataRepository,
     private val householdRepository: HouseholdRepository,
+    private val firebaseMessageRepository: FirebaseMessageRepository,
     private val userRepository: UserRepository
 ): ViewModel(){
     val household = sharedDataRepository.household
@@ -39,10 +42,12 @@ class HouseholdViewModel @Inject constructor(
         }
     }
 
-    fun removeMemberFromHousehold(userID:String){
+    fun removeMemberFromHousehold(userID:String, context: Context){
         viewModelScope.launch {
             val result = householdRepository.removeUserFromHousehold(userID = userID,household.value.householdId)
             _resultMessage.value = result
+            if (result.success)
+                firebaseMessageRepository.sendNotification(userId = userID,"Household","You have been kicked from the household by ${sharedDataRepository.user.value.username}", context = context)
         }
     }
 
