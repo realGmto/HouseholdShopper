@@ -120,7 +120,7 @@ fun RegisterScreen(
         registerResult?.let {
             if (it.success){
                 LaunchedEffect(Unit) {
-                    navController.navigate("home")  //TODO go to create household or join household
+                    navController.navigate("restricted")
                 }
             }
             Text(
