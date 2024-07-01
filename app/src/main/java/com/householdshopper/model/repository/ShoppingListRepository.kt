@@ -1,6 +1,5 @@
 package com.householdshopper.model.repository
 
-import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -8,13 +7,12 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.firestore
 import com.householdshopper.model.Household
+import com.householdshopper.model.ResultMessage
 import com.householdshopper.model.ShoppingList
-import com.householdshopper.model.ShoppingListItem
 import com.householdshopper.model.User
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -73,6 +71,18 @@ class ShoppingListRepository @Inject constructor() {
         }catch (e:Exception){
             println("Error creating shopping list: $e")
             ""
+        }
+    }
+
+    suspend fun deleteList(listId: String):ResultMessage{
+        return try {
+            db.collection(collectionPath)
+                .document(listId)
+                .delete()
+                .await()
+            ResultMessage(success = true, message = "Successfully deleted shopping list")
+        }catch (e:Exception){
+            ResultMessage(success = false, message = "There was an error while trying to delete shopping list")
         }
     }
 }

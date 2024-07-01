@@ -1,5 +1,6 @@
 package com.householdshopper.view
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.householdshopper.view.items.ShoppingListItem
 import com.householdshopper.viewmodel.HomeViewModel
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.householdshopper.R
@@ -43,6 +42,15 @@ fun HomeScreen(
 
     val shoppingLists by viewModel.shoppingLists.collectAsState()
     val household by viewModel.household.collectAsState()
+
+    val resultMessage by viewModel.resultMessage.collectAsState()
+    val context = LocalContext.current
+
+    resultMessage.let {
+        if (!it.success){
+            Toast.makeText(context, it.message,Toast.LENGTH_LONG).show()
+        }
+    }
 
     val selectedItem by viewModel.selectedItem.collectAsState()
 

@@ -1,10 +1,10 @@
 package com.householdshopper.viewmodel
 
-import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.householdshopper.model.ResultMessage
 import com.householdshopper.model.ShoppingList
 import com.householdshopper.model.ShoppingListItem
 import com.householdshopper.model.repository.FirebaseMessageRepository
@@ -16,8 +16,10 @@ import com.householdshopper.model.repository.UserRepository
 import com.householdshopper.ui.theme.green
 import com.householdshopper.ui.theme.light_gray
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -34,6 +36,9 @@ class HomeViewModel @Inject constructor(
 ): ViewModel() {
     private val _shoppingLists = MutableStateFlow<List<ShoppingList>>(emptyList())
     val shoppingLists: StateFlow<List<ShoppingList>> = _shoppingLists
+
+    private val _resultMessage = MutableStateFlow(ResultMessage(success = true))
+    val resultMessage = _resultMessage.asStateFlow()
 
     private var allShoppingList: List<ShoppingList> = emptyList()
 
@@ -55,6 +60,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun startListeningList() {
         viewModelScope.launch {
             shoppingListRepository.getShoppingListsUpdates(household.value.householdId)
@@ -103,5 +109,12 @@ class HomeViewModel @Inject constructor(
         return if (countBoughtItems(list.items) != list.items.size)
             light_gray
         else green
+    }
+
+    fun deleteShoppingList(shoppingList: ShoppingList){
+        viewModelScope.launch {
+            val result = shoppingListRepository.deleteList(listId = shoppingList.documentId)
+            _resultMessage.value = result
+        }
     }
 }
