@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,8 +22,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.householdshopper.R
 import com.householdshopper.view.components.TopBar
 import com.householdshopper.view.items.ReceiveInviteItem
 import com.householdshopper.view.items.SendInviteItem
@@ -88,13 +89,13 @@ fun InvitesScreen(
         }
         NavigationBar {
             NavigationBarItem(
-                icon = { Icon(Icons.Filled.Favorite, contentDescription = "Send invites") },
+                icon = { Icon(painter = painterResource(id = R.drawable.baseline_send_24), contentDescription = "Send invites") },
                 label = { Text("Send") },
                 selected = selectedItem == 0,
                 onClick = { viewModel.updateInvites(0) }
             )
             NavigationBarItem(
-                icon = { Icon(Icons.Filled.Favorite, contentDescription = "Received invites") },
+                icon = { Icon(painter = painterResource(id = R.drawable.baseline_mail_24), contentDescription = "Received invites") },
                 label = { Text("Received") },
                 selected = selectedItem == 1,
                 onClick = { viewModel.updateInvites(1) }
