@@ -7,13 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.householdshopper.model.Invite
 import com.householdshopper.model.InviteStatus
 import com.householdshopper.model.User
+import com.householdshopper.model.repository.FirebaseMessageRepository
 import com.householdshopper.model.repository.InviteRepository
 import com.householdshopper.model.repository.SharedDataRepository
 import com.householdshopper.model.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
@@ -25,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddMemberViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val sharedDataRepository: SharedDataRepository,
+    sharedDataRepository: SharedDataRepository,
+    private val firebaseMessageRepository: FirebaseMessageRepository,
     private val inviteRepository: InviteRepository
 ): ViewModel() {
     val household = sharedDataRepository.household
@@ -93,8 +94,11 @@ class AddMemberViewModel @Inject constructor(
         viewModelScope.launch {
             val currentUserId = currentUser.value.documentId
             val result = inviteRepository.createInvite(from = currentUserId, to = invitee.documentId)
-            if (!result)
+            if (!result){
                 Toast.makeText(context,"There was an error while trying to send an invite",Toast.LENGTH_LONG).show()
+            }
+            else
+                firebaseMessageRepository.sendNotification(userId = invitee.documentId, title = "Invite", body = "You have been invited to join ${currentUser.value.username} household", context = context)
         }
     }
 

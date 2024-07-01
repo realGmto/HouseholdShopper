@@ -56,7 +56,6 @@ fun AddUserItem(user: User, viewModel: AddMemberViewModel) {
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Placeholder for user avatar
             Box(
                 modifier = Modifier
                     .size(48.dp)
