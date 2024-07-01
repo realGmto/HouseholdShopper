@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import com.householdshopper.model.Invite
 import com.householdshopper.model.User
 import com.householdshopper.model.repository.FirebaseMessageRepository
+import com.householdshopper.model.repository.HouseholdRepository
 import com.householdshopper.model.repository.InviteRepository
 import com.householdshopper.model.repository.SharedDataRepository
 import com.householdshopper.model.repository.UserRepository
@@ -20,6 +22,7 @@ import javax.inject.Inject
 class InvitesViewModel @Inject constructor(
     private val inviteRepository: InviteRepository,
     private val userRepository: UserRepository,
+    private val householdRepository: HouseholdRepository,
     private val sharedDataRepository: SharedDataRepository,
     private val firebaseMessageRepository: FirebaseMessageRepository
 ): ViewModel(),InviteViewModel {
@@ -92,6 +95,12 @@ class InvitesViewModel @Inject constructor(
             firebaseMessageRepository.sendNotification(userId = sender.documentId, title = title, body = body, context = context)
             userRepository.updateHousehold(userID = invite.to, householdID = sender.householdID)
             inviteRepository.deleteInvite(invite.documentId)
+
+            val user = userRepository.getUser(FirebaseAuth.getInstance().currentUser?.uid ?: "")
+            val household = householdRepository.getSpecificHousehold(user.householdID)
+
+            sharedDataRepository.setHousehold(household)
+
             navHostController.navigate("home")
         }
     }
