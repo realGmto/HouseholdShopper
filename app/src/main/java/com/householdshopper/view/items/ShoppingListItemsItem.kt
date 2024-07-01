@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -64,13 +63,6 @@ fun ShoppingListItemsItem(item: ShoppingListItem, viewModel: ShoppingListViewMod
                     text = "${item.quantity}${item.unit}",
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
-                )
-            }
-            IconButton(onClick = { /* TODO - Implement edit functionality */}) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit",
-                    tint = MaterialTheme.colorScheme.primary
                 )
             }
             IconButton(onClick = { viewModel.removeItem(documentId = item.documentId) }) {

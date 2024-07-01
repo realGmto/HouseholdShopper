@@ -172,7 +172,6 @@ fun ShoppingListScreen(
                     ){
                         IconButton(onClick = {
                             scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                /* TODO- call function to add item to shopping list */
                                 if (!sheetState.isVisible) {
                                     showBottomSheet = false
                                 }
