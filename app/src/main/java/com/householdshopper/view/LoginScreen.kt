@@ -95,7 +95,10 @@ fun LoginScreen(
         loginResult?.let {
             if(it.success){
                 LaunchedEffect(Unit) {
-                    navController.navigate("home") // TODO advanced navigation based on if household already exists
+                    if (it.inHousehold)
+                        navController.navigate("home")
+                    else
+                        navController.navigate("restricted")
                 }
             }
             Text(
