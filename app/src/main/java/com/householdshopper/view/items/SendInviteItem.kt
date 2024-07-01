@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.householdshopper.model.Invite
 import com.householdshopper.viewmodel.InvitesViewModel
 
@@ -40,7 +39,7 @@ fun SendInviteItem(invite: Invite, viewModel: InvitesViewModel){
         ){
             Text(
                 text = "You have send an invite to $name",
-                fontSize = 12.sp
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }

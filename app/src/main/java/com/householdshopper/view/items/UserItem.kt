@@ -69,7 +69,7 @@ fun UserItem(
             ) {
                 Text(
                     text = user.username,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
